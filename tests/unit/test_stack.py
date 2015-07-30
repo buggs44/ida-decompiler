@@ -44,7 +44,7 @@ class TestStack(test_helper.TestHelper):
       esp@1 = 2;
       goto loc_4;
     loc_4:
-      esp@2 = Φ(esp@1, esp@3, );
+      esp@2 = Φ(esp@3, esp@1, );
       return esp@2;
     }
     """
@@ -132,7 +132,7 @@ class TestStack(test_helper.TestHelper):
     }
     """)
 
-    self.assert_step(decompiler.step_stack_renamed, input, """
+    self.assert_step(decompiler.step_stack_pruned, input, """
     func() {
       s0@5 = 1;
       return &s0@5;

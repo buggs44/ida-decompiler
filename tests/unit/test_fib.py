@@ -8,7 +8,7 @@ from test_helper import *
 import decompiler
 import ssa
 
-class TestConditionals(TestHelper):
+class TestFibonacci(TestHelper):
 
   def setUp(self):
     TestHelper.setUp(self)
@@ -29,7 +29,8 @@ class TestConditionals(TestHelper):
         -300(134514155, s2);
         s4 = 1;
         while (s4 <= s5) {
-          -316(134514172, 114(s0, s2));
+          s2 = 114(s0, s2);
+          -316(134514172, s2);
           s0 = s0 + 1;
           s4 = s4 + 1;
         }
@@ -45,7 +46,7 @@ class TestConditionals(TestHelper):
 
     self.assert_step(decompiler.step_decompiled, fct.hex,
       """
-      func() {
+      func(a0) {
         if (!a0) {
           v0 = 0;
         }

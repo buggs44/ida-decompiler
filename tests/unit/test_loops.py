@@ -24,9 +24,9 @@ class TestLoops(TestHelper):
     self.assert_step(decompiler.step_decompiled, fct.hex,
       """
       func() {
-        s0 = a0;
         while (1) {
-          s1 = s1 + 1;
+          s1 = v0;
+          v0 = s1 + 1;
           -307(134515040, s1);
         }
       }
@@ -59,9 +59,13 @@ class TestLoops(TestHelper):
     self.assert_step(decompiler.step_decompiled, fct.hex,
       """
       func() {
-        s0 = 0;
-        while (s0 <= 9) {
-          s0 = s0 + 1;
+        v0 = 0;
+        while (1) {
+          s0 = v0;
+          if (s0 > 9) {
+            break;
+          }
+          v0 = s0 + 1;
           -391(134515040, s0);
         }
         return 0;
@@ -166,12 +170,13 @@ class TestLoops(TestHelper):
     self.assert_step(decompiler.step_decompiled, fct.hex,
       """
       func() {
-        s0 = 0;
+        v0 = 0;
         while (1) {
+          s0 = v0;
           if (s0 != 6) {
             -660(134515040, s0);
       loc_3c:
-            s0 = s0 + 1;
+            v0 = s0 + 1;
             if (s0 <= 9) {
               continue;
             }
@@ -241,14 +246,15 @@ class TestLoops(TestHelper):
     self.assert_step(decompiler.step_decompiled, fct.hex,
       """
       func() {
-        s0 = 0;
+        v0 = 0;
         do {
+          s0 = v0;
           if (s0 == 9) {
             -868(134515071);
             break;
           }
           -884(134515040, s0);
-          s0 = s0 + 1;
+          v0 = s0 + 1;
         } while (s0 <= 9);
         return 0;
       }
@@ -360,9 +366,10 @@ class TestLoops(TestHelper):
         s0 = 0;
         while (s0 <= 29) {
           do {
-            s4 = s4 + 1;
+            s4 = v0;
+            v0 = s4 + 1;
             -1307(134515040, s4);
-          } while (s4 <= 9);
+          } while (v0 <= 9);
           -1307(134515040, s0);
           s0 = s0 + 1;
         }

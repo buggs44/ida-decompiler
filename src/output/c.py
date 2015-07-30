@@ -127,7 +127,7 @@ class tokenizer(object):
   def display_labels(self):
     locations = []
     for stmt in statement_iterator_t(self.function):
-      if type(stmt) == goto_t:
+      if type(stmt) == goto_t and stmt.is_known():
         locations.append(stmt.expr.value)
       elif type(stmt) == branch_t:
         locations.append(stmt.true.value)
@@ -152,6 +152,13 @@ class tokenizer(object):
 
     l,r = self.matching('(', ')')
     yield l
+    args = list(self.function.arguments)
+    for i in range(len(args)):
+      for tok in self.expression_tokens(args[i]):
+        yield tok
+      if i < len(args)-1:
+        yield token_character(',')
+        yield token_character(' ')
     yield r
     yield token_character(' ')
 
@@ -182,7 +189,7 @@ class tokenizer(object):
   def parenthesize(self, obj):
     """ parenthesize objects as needed. """
 
-    if type(obj) not in (regloc_t, flagloc_t, value_t, var_t, arg_t) or \
+    if type(obj) not in (regloc_t, flagloc_t, value_t, var_t, stack_var_t, arg_t) or \
           (type(obj) in (regloc_t, flagloc_t) and obj.index is not None):
       l, r = self.matching('(', ')')
       yield l
@@ -227,7 +234,7 @@ class tokenizer(object):
       yield token_number(obj.value)
       return
 
-    if type(obj) == var_t:
+    if isinstance(obj, var_t):
       name = obj.name
       if obj.index is not None:
         name += '@%u' % obj.index
